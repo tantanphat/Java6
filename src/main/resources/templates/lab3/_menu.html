@@ -1,0 +1,47 @@
+<div th:fragment="menu" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <nav class="main-nav h-100" >
+        <img src="https://play-lh.googleusercontent.com/6qPTOwTblzEj_vDS6AbVmIBzf0e4NiE9oCm_SPOuIJEOpliZTZ_m6F_0BCxGjLbI-A" alt="Microsoft" class="logo">
+
+        <ul class="main-menu d-flex align-items-center ">
+            <li><a th:href="@{/lab3/home}" th:text="#{golbal.menu.home}">Home</a></li>
+            <li><a th:href="@{/lab3/contact}" th:text="#{golbal.menu.contact}">About</a></li>
+            <li><a th:href="@{/lab3/student/form}" th:text="#{golbal.menu.student}">Student</a></li>
+            <li><a th:href="@{/firbase-sinh-vien}" th:text="#{golbal.menu.firbaseSV}">Firbase Student</a></li>
+            <li><a th:href="@{/account}" >Account</a></li>
+            <li><a th:href="@{/students}" >Students Excel</a></li>
+            <li><a th:href="@{/manager-authorities}" >Authorities</a></li>
+<!--            <li><a th:href="@{/lab3/muttip-file}" >Folder Image</a></li>-->
+        </ul>
+        <ul class="right-menu">
+            <li>
+                <a href="?lang=vi">
+                    <i class="fi fi-vn"></i>
+                </a>
+            </li>
+            <li>
+                <a href="?lang=en">
+                    <i class="fi fi-um"></i>
+                </a>
+            </li>
+            <li sec:authorize="!isAuthenticated()">
+                <a href="/login">
+                    <span>Login</span>
+                </a>
+            </li>
+            <li sec:authorize="isAuthenticated()">
+                <a href="/my-information">
+                    <span>Information</span>
+                </a>
+            </li>
+            <li sec:authorize="isAuthenticated()">
+                <a href="/logout">
+                    <span>Logout</span>
+                </a>
+            </li>
+    <!--            <li sec:authorize="hasAuthority('USER')">-->
+    <!--                Hello Users-->
+    <!--            </li>-->
+
+        </ul>
+    </nav>
+</div>

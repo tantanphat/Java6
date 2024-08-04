@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{lab3/lab3 :: dynamic(~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+</head>
+<body>
+<div class="mb-5 row d-flex justify-content-center border border-black">
+    <form class="row g-3 w-50" id="formSV">
+        <input id="key" hidden>
+        <div class="col-md-12">
+            <label for="inputMssv" class="form-label">MSSV:</label>
+            <input type="name" class="form-control" id="inputMssv">
+        </div>
+        <div class="col-md-12">
+            <label for="inputName" class="form-label">Họ tên:</label>
+            <input type="name" class="form-control" id="inputName">
+        </div>
+        <div class="col-md-12">
+            <label for="inputTuoi" class="form-label">Tuổi:</label>
+            <input type="number" class="form-control" id="inputTuoi">
+        </div>
+            <div class="col-md-12">
+                <label for="inputAddress" class="form-label">Quê quán:</label>
+                <input type="text" class="form-control" id="inputAddress" >
+            </div>
+            <div class="col-12">
+            <label for="inputKhoi" class="form-label">Khối học:</label>
+                <select class="form-select" id="inputKhoi" aria-label="Default select example">
+                    <option value="KHTN" selected>KHTN</option>
+                    <option value="KHXH">KHXH</option>
+                </select>
+        </div>
+
+        <div class="col-md-12 d-flex">
+            <div class="col-md-6 me-2">
+                <label for="inputDiemToan" class="form-label">Điểm toán:</label>
+                <input type="text" value="0.0" class="form-control" id="inputDiemToan">
+            </div>
+            <div class="col-md-6">
+                <label for="inputDiemVan" class="form-label">Điểm văn:</label>
+                <input type="text" value="0.0" class="form-control" id="inputDiemVan">
+            </div>
+        </div>
+
+       <div class="col-md-12 d-flex">
+           <div class="col-md-6 me-2">
+               <div class="col-md-12">
+                   <label for="inputDiemSu" class="form-label">Điểm sử:</label>
+                   <input type="text" value="0.0" class="form-control" id="inputDiemSu">
+               </div>
+               <div class="col-md-12">
+                   <label for="inputDiemDia" class="form-label">Điểm địa:</label>
+                   <input type="text" value="0.0" class="form-control" id="inputDiemDia">
+               </div>
+               <div class="col-md-12">
+                   <label for="inputDiemGDCD" class="form-label">Điểm GDCD:</label>
+                   <input type="text" value="0.0" class="form-control" id="inputDiemGDCD">
+               </div>
+           </div>
+           <div class="col-md-6">
+               <div class="col-md-12">
+                   <label for="inputDiemLy" class="form-label">Điểm lý:</label>
+                   <input type="text" value="0.0" class="form-control" id="inputDiemLy">
+               </div>
+               <div class="col-md-12">
+                   <label for="inputDiemHoa" class="form-label">Điểm hóa:</label>
+                   <input type="text" value="0.0" class="form-control" id="inputDiemHoa">
+               </div>
+               <div class="col-md-12">
+                   <label for="inputDiemSinh" class="form-label">Điểm sinh:</label>
+                   <input type="text" value="0.0" class="form-control" id="inputDiemSinh">
+               </div>
+           </div>
+       </div>
+
+
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary" id="create">Create</button>
+            <button type="submit" class="btn btn-primary" id="update">Update</button>
+            <button type="submit" class="btn btn-primary" id="delete">Delete</button>
+            <button type="submit" class="btn btn-primary" id="reset">Reset</button>
+        </div>
+    </form>
+</div>
+<table id="tableSinhVien" class="border border-black w-100  mb-5">
+    <thead class="text-center">
+    <tr>
+        <th >MSSV</th>
+        <th >Họ tên</th>
+        <th >Tuổi</th>
+        <th >Quê quán</th>
+        <th >Khối học</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody class="text-center">
+    </tbody>
+</table>
+
+<script src="https://cdn.datatables.net/2.1.0/js/dataTables.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://www.gstatic.com/firebasejs/5.4.0/firebase.js"></script>
+<script>
+    $(document).ready(function() {
+        function fillData() {
+            const host = "https://java6-c76ed-default-rtdb.firebaseio.com/students.json";
+            $.ajax({
+                url: host,
+                method: "GET",
+                success: function(data) {
+                    // $('#tableSinhVien').DataTable({
+                    //     data: data,
+                    //     columns: [
+                    //         { data: 'mssv' },
+                    //         { data: 'tenSV' },
+                    //         { data: 'tuoi' },
+                    //         { data: 'queQuan' },
+                    //         { data: 'khoiHoc' }
+                    //     ],
+                    //     responsive: true,
+                    //     searching: false,
+                    //     ordering: false,
+                    //     paging: false,
+                    //     scrollX: 400,
+                    //     scrollY: 400,
+                    //     processing: true,
+                    //     info: false
+                    // });
+                    console.log(data)
+                    var tableBody = $('#tableSinhVien tbody');
+                    tableBody.empty();
+                    var keys = Object.keys(data);
+                    keys.forEach(function(key) {
+                        var item = data[key];
+                        var row = $('<tr>');
+                        row.append('<td>' + item.mssv + '</td>');
+                        row.append('<td>' + item.tenSV + '</td>');
+                        row.append('<td>' + item.tuoi + '</td>');
+                        row.append('<td>' + item.queQuan + '</td>');
+                        row.append('<td>' + item.khoiHoc + '</td>');
+                        row.append('<td>' +
+                            '<button class="btn border border-black me-2 edit" data-key="' + key + '">Edit</button>' +
+                            '<button class="btn border border-black delete" data-key="' + key + '">Delete</button>' +
+                            '</td>');
+                        tableBody.append(row);
+                    });
+
+                    $('#tableSinhVien').on('click', '.edit', function() {
+                        var key = $(this).data('key');
+                        var studentUrl = `https://java6-c76ed-default-rtdb.firebaseio.com/students/${key}.json`;
+                        fetch(studentUrl)
+                            .then(response => response.json())
+                            .then(student => {
+                                $('#inputMssv').val(student.mssv);
+                                $('#inputName').val(student.tenSV);
+                                $('#inputTuoi').val(student.tuoi);
+                                $('#inputAddress').val(student.queQuan);
+                                $('#inputKhoi').val(student.khoiHoc);
+                                $('#inputDiemToan').val(student.monHoc.monToan);
+                                $('#inputDiemVan').val(student.monHoc.monVan);
+                                $('#inputDiemSu').val(student.monHoc.monSu);
+                                $('#inputDiemDia').val(student.monHoc.monDia);
+                                $('#inputDiemGDCD').val(student.monHoc.monGDCD);
+                                $('#inputDiemLy').val(student.monHoc.monLy);
+                                $('#inputDiemHoa').val(student.monHoc.monHoa);
+                                $('#inputDiemSinh').val(student.monHoc.monSinh);
+                                $('#key').val(key);
+
+                                $('#formSV').get(0).scrollIntoView({ behavior: 'smooth' });
+                            })
+                            .catch(error => console.error('Error fetching student data:', error));
+                    });
+
+
+
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                }
+            });
+        }
+        $('#tableSinhVien').on('click', '.delete', function() {
+            var key = $(this).data('key');
+            var studentUrl = `https://java6-c76ed-default-rtdb.firebaseio.com/students/${key}.json`;
+            $.ajax({
+                url: studentUrl,
+                method: "DELETE",
+                success: function() {
+                    reset();
+                    fillData();
+                    alert('Delete thành công');
+                    $('#tableSinhVien thead th').first().get(0).scrollIntoView({ behavior: 'smooth' });
+
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error updating student:', textStatus, errorThrown);
+                }
+            });
+        });
+        $('#update').click(function(e) {
+            e.preventDefault();
+
+            var mssv = $('#inputMssv').val();
+            var tenSV = $('#inputName').val();
+            var tuoi = $('#inputTuoi').val();
+            var queQuan = $('#inputAddress').val();
+            var khoiHoc = $('#inputKhoi').val();
+            var monHoc = {
+                monToan: $('#inputDiemToan').val(),
+                monVan: $('#inputDiemVan').val(),
+                monSu: $('#inputDiemSu').val(),
+                monDia: $('#inputDiemDia').val(),
+                monGDCD: $('#inputDiemGDCD').val(),
+                monLy: $('#inputDiemLy').val(),
+                monHoa: $('#inputDiemHoa').val(),
+                monSinh: $('#inputDiemSinh').val()
+            };
+            var student = {
+                mssv: mssv,
+                tenSV: tenSV,
+                tuoi: tuoi,
+                queQuan: queQuan,
+                khoiHoc: khoiHoc,
+                monHoc: monHoc
+            };
+
+            var key = $('#key').val();
+            var studentUrl = `https://java6-c76ed-default-rtdb.firebaseio.com/students/${key}.json`;
+
+            $.ajax({
+                url: studentUrl,
+                method: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify(student),
+                success: function() {
+                    alert('Update thành công');
+                    fillData();
+                    $('#tableSinhVien thead th').first().get(0).scrollIntoView({ behavior: 'smooth' });
+
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error updating student:', textStatus, errorThrown);
+                }
+            });
+        });
+
+        function reset(){
+            $('#inputMssv').val("");
+            $('#inputName').val("");
+            $('#inputTuoi').val("");
+            $('#inputAddress').val("");
+            $('#inputKhoi').val("");
+            $('#inputDiemToan').val(0.0);
+            $('#inputDiemVan').val(0.0);
+            $('#inputDiemSu').val(0.0);
+            $('#inputDiemDia').val(0.0);
+            $('#inputDiemGDCD').val(0.0);
+            $('#inputDiemLy').val(0.0);
+            $('#inputDiemHoa').val(0.0);
+            $('#inputDiemSinh').val(0.0);
+
+            $('#key').val("");
+
+        }
+        $('#reset').click(function(e) {
+            e.preventDefault();
+            reset();
+            $('#formSV').get(0).scrollIntoView({ behavior: 'smooth' });
+        });
+
+        $('#create').click(function(e) {
+            e.preventDefault();
+
+            var mssv = $('#inputMssv').val();
+            var tenSV = $('#inputName').val();
+            var tuoi = $('#inputTuoi').val();
+            var queQuan = $('#inputAddress').val();
+            var khoiHoc = $('#inputKhoi').val();
+            var monHoc = {
+                monToan: $('#inputDiemToan').val(),
+                monVan: $('#inputDiemVan').val(),
+                monSu: $('#inputDiemSu').val(),
+                monDia: $('#inputDiemDia').val(),
+                monGDCD: $('#inputDiemGDCD').val(),
+                monLy: $('#inputDiemLy').val(),
+                monHoa: $('#inputDiemHoa').val(),
+                monSinh: $('#inputDiemSinh').val()
+            };
+            var student = {
+                mssv: mssv,
+                tenSV: tenSV,
+                tuoi: tuoi,
+                queQuan: queQuan,
+                khoiHoc: khoiHoc,
+                monHoc: monHoc
+            };
+
+            $.ajax({
+                url: "https://java6-c76ed-default-rtdb.firebaseio.com/students.json",
+                method: "POST",
+                data: JSON.stringify(student),
+                success: function() {
+
+                    alert('Create thành công');
+                    fillData();
+                    $('#tableSinhVien thead th').first().get(0).scrollIntoView({ behavior: 'smooth' });
+
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error updating student:', textStatus, errorThrown);
+                }
+            });
+        })
+
+        $('#delete').click(function(e) {
+            e.preventDefault();
+
+            var key = $('#key').val();
+
+            if (key === '') {
+                alert('Vui lòng chọn sinh viên để xóa');
+                return;
+            }
+            var studentUrl = `https://java6-c76ed-default-rtdb.firebaseio.com/students/${key}.json`;
+
+            $.ajax({
+                url: studentUrl,
+                method: "DELETE",
+                success: function() {
+                    alert('Delete thành công');
+                    reset();
+                    fillData();
+                    $('#tableSinhVien thead th').first().get(0).scrollIntoView({ behavior: 'smooth' });
+
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error updating student:', textStatus, errorThrown);
+                }
+            });
+        });
+        fillData()
+    });
+</script>
+</body>
+</html>

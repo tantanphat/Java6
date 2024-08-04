@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Hello</h1>
+<ul >
+    <li th:each="sv,state: ${dssv}">
+        <a th:href="@{|/student/list?index=${state.index}|}">[[${sv.name}]]</a>
+    </li>
+    <div>
+        <h2>Student Deltail</h2>
+        <ul th:object="${sv}">
+            <li>Tên: [[${sv.name}]]</li>
+            <li>Tuổi: [[${sv.age}]]</li>
+            <li>Điểm: [[${sv.grade}]]</li>
+            <li>SĐT: [[${sv.contact.phone}]]</li>
+            <li>Email: [[${sv.contact.email}]]</li>
+            <li>Môn học:
+                <span th:each="subject : ${sv.subjects}">[[${subject.subjectName}]] </span>
+            </li>
+            <li th:switch="${#arrays.length(sv.subjects)}">
+                <i>Time:</i>
+                <b th:case="0">Mới vào học</b>
+                <b th:case="1">Đang học</b>
+                <b th:case="*">Chuẩn bị ra trường</b>
+            </li>
+
+            <li th:if="${sv.grade}gt 90">Good job</li>
+
+        </ul>
+    </div>
+</ul>
+</body>
+</html>

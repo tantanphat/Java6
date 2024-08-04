@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:replace="~{lab3/lab3 :: dynamic(~{::body})}">
+<head>
+    <meta charset="UTF-8">
+
+</head>
+<body>
+<h1>Login Successful</h1>
+<span sec:authorize="hasAuthority('USER')">User</span>
+<span sec:authorize="hasAuthority('ADMIN')">Admin</span>
+<span sec:authorize="hasAuthority('GUEST')">Guest</span>
+<hr>
+<h1>My Information</h1>
+<p>Username: <span th:text="${username}">Username</span></p>
+<p>Roles: <span th:text="${roles}">Roles</span></p>
+</body>
+</html>

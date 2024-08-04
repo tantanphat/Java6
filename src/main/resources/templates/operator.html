@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h3>Thymeleaf Operators</h3>
+<ul>
+    <li th:text="${x + y}"></li>
+    <li th:text="${x % y}"></li>
+    <li th:text="not ${x > y}"></li>
+<!--    x gt y là xem x có > y không-->
+    <li th:text="${x gt y} and ${x == y}"></li>
+    <li th:text="${x > y} ? 'OK' : 'Cancel'"></li>
+<!--    Tạo đường dẫn-->
+    <li th:text="@{|/a/b/${x}/${y}|}"></li>
+    <li th:text="'/a/b/' + ${x} + '/' + ${y}"></li>
+    <li th:text="@{/a/b/p1/p2(p1=${x}, p2=${y})}"></li>
+</ul>
+
+</body>
+</html>

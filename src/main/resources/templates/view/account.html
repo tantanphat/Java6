@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{lab3/lab3 :: dynamic(~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="mb-5 row d-flex justify-content-center ">
+    <form class="row g-3 w-50" id="formSV">
+        <div class="col-md-6">
+            <img src="https://caodang.fpt.edu.vn/wp-content/uploads/photo.jpg" class="col-md-12" id="fileAnh" style="height: 280px">
+
+            <input type="file" accept="image/*" id="inputFile" class="custom-file-input" hidden>
+        </div>
+        <div class="col-md-6">
+            <div class="col-md-12">
+                <label for="inputUsername" class="form-label">Username:</label>
+                <input type="text" class="form-control" id="inputUsername">
+            </div>
+            <div class="col-md-12">
+                <label for="inputPassword" class="form-label">Password:</label>
+                <input type="password" class="form-control" id="inputPassword">
+            </div>
+            <div class="col-md-12">
+                <label for="inputFullName" class="form-label">Fullname:</label>
+                <input type="text" class="form-control" id="inputFullName">
+            </div>
+            <div class="col-md-12">
+                <label for="inputEmail" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="inputEmail">
+            </div>
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary" id="create">Create</button>
+            <button type="submit" class="btn btn-primary" id="update">Update</button>
+            <button type="submit" class="btn btn-primary" id="delete">Delete</button>
+            <button type="submit" class="btn btn-primary" id="reset">Reset</button>
+        </div>
+    </form>
+</div>
+<div class="container">
+    <table id="tableSinhVien" class="display" style="width:100%" >
+        <thead class="text-center">
+        <tr>
+            <th >Username</th>
+            <th >Password</th>
+            <th >Fullname</th>
+            <th >Email</th>
+            <th >Photo</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody class="text-center">
+        </tbody>
+    </table>
+</div>
+
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!--<script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>-->
+<!--<script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.0/datatables.min.js"></script>-->
+<script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.1.0/af-2.7.0/b-3.1.0/b-colvis-3.1.0/b-html5-3.1.0/cr-2.0.3/date-1.5.2/fc-5.0.1/fh-4.0.1/kt-2.12.1/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.3/sb-1.7.1/sp-2.3.1/sl-2.0.3/sr-1.4.1/datatables.min.js"></script>
+
+
+<script >
+    $(document).ready(function() {
+        $.noConflict()
+        function fillData() {
+            $.ajax({
+                url: "http://localhost:8080/rest/account/get-all",
+                method: "GET",
+                success: function(data) {
+                    console.log(data)
+                    if ($.fn.DataTable.isDataTable('#tableSinhVien')) {
+                        $('#tableSinhVien').DataTable().destroy();
+                    }
+
+                    $('#tableSinhVien').DataTable({
+                        data: data,
+                        paging: true,
+                        autoWidth: false,
+                        responsive: true,
+                        pageLength: 10,
+                        info: false,
+                        lengthChange: true,
+                        layout: {
+                            topStart: {
+                                buttons: [
+                                    {
+                                        extend: 'excel',
+                                        text: 'Xuất ra excel',
+                                        exportOptions: {
+                                            modifier: {
+                                                page: 'current'
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        columns: [
+                            { data: 'username'},
+                            { data: 'password' },
+                            { data: 'fullname'},
+                            { data: 'email'},
+                            { data: 'photo'},
+                            {
+                                data: null,
+                                render: function(data, type, row) {
+                                    return '<button class="btn btn-primary btn-sm me-2 edit" data-key="' + row.username + '">Sửa</button>' +
+                                        '<button class="btn btn-danger btn-sm delete" data-key="' + row.username + '">Xóa</button>';
+                                }
+                            }
+                        ],
+                    });
+
+                    $('.dt-length label').css('display', 'none');
+
+                    $('#tableSinhVien').on('click', '.edit', function() {
+                        var key = $(this).data('key');
+                        $.ajax({
+                            url: "http://localhost:8080/rest/account?username="+key,
+                            method: "GET",
+                            success: function(data) {
+                                $('#inputUsername').val(data.username);
+                                $('#inputPassword').val(data.password);
+                                $('#inputFullName').val(data.fullname);
+                                $('#inputEmail').val(data.email);
+
+                                // Cập nhật ảnh nếu có
+                                if (data.photo) {
+                                    $('#fileAnh').attr('src', '/account/' + data.photo);
+                                }
+
+
+                                $('body').first().get(0).scrollIntoView({ behavior: 'smooth' });
+
+                                $('#modalSua').modal('show');
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                console.error('Error fetching student data:', textStatus, errorThrown);
+                            }
+                        })
+                    });
+
+                    $('#tableSinhVien').on('click', '.delete', function() {
+                        var key = $(this).data('key');
+
+                        $.ajax({
+                            url: "/rest/account?username="+key,
+                            method: "DELETE",
+                            success: function() {
+                                alert('Delete thành công');
+                                reset();
+                                fillData();
+                                $('#tableSinhVien thead th').first().get(0).scrollIntoView({ behavior: 'smooth' });
+
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                console.error('Error updating student:', textStatus, errorThrown);
+                            }
+                        });
+                    });
+
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                }
+            });
+        }
+
+        function reset(){
+            $('#inputUsername').val("");
+            $('#inputPassword').val("");
+            $('#inputFullName').val("");
+            $('#inputEmail').val("");
+
+            $('#fileAnh').attr('src', '/account/user.png' );
+
+        }
+        $('#reset').click(function(e) {
+            e.preventDefault();
+            reset();
+            $('#formSV').get(0).scrollIntoView({ behavior: 'smooth' });
+        });
+
+        $('#create').click(async function(e) {
+            e.preventDefault(); // Ngăn chặn hành động mặc định của nút submit
+
+            var fileInput = $('#inputFile')[0];
+            var file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file.');
+                return;
+            }
+
+            var fileData = new FormData();
+            fileData.append('file', file);
+
+            // Gửi yêu cầu tải tệp
+            await $.ajax({
+                url: "/api/file/save",
+                method: "POST",
+                data: fileData,
+                processData: false, // Ngăn chặn jQuery tự động biến đổi dữ liệu thành chuỗi truy vấn
+                contentType: false, // Ngăn chặn jQuery ghi đè lên tiêu đề Content-Type
+                success: function(response) {
+                    console.log('Ảnh được lưu thành công!');
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error uploading file:', textStatus, errorThrown);
+                    alert('Ảnh xảy ra lỗi');
+                }
+            });
+
+            // Gửi yêu cầu tạo tài khoản
+            var account = {
+                username: $('#inputUsername').val(),
+                password: $('#inputPassword').val(),
+                fullname: $('#inputFullName').val(),
+                email: $('#inputEmail').val(),
+                photo: file.name
+            };
+
+            await $.ajax({
+                url: "/rest/account",
+                method: "POST",
+                data: JSON.stringify(account),
+                contentType: "application/json", // Đảm bảo gửi dữ liệu dưới dạng JSON
+                success: function(response) {
+                    alert('Đã thêm thành công!');
+                    fillData();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error creating account:', textStatus, errorThrown);
+                    alert('Error creating account. Please try again.');
+                }
+            });
+        });
+
+        $('#update').click(async function(e) {
+            e.preventDefault(); // Ngăn chặn hành động mặc định của nút submit
+
+            var fileInput = $('#inputFile')[0];
+            var file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file.');
+                return;
+            }
+
+            var fileData = new FormData();
+            fileData.append('file', file);
+
+            // Gửi yêu cầu tải tệp
+            await $.ajax({
+                url: "/api/file/save",
+                method: "POST",
+                data: fileData,
+                processData: false, // Ngăn chặn jQuery tự động biến đổi dữ liệu thành chuỗi truy vấn
+                contentType: false, // Ngăn chặn jQuery ghi đè lên tiêu đề Content-Type
+                success: function(response) {
+                    console.log('Ảnh được lưu thành công!');
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error uploading file:', textStatus, errorThrown);
+                    alert('Ảnh xảy ra lỗi');
+                }
+            });
+
+            // Gửi yêu cầu tạo tài khoản
+            var account = {
+                username: $('#inputUsername').val(),
+                password: $('#inputPassword').val(),
+                fullname: $('#inputFullName').val(),
+                email: $('#inputEmail').val(),
+                photo: file.name
+            };
+
+            await $.ajax({
+                url: "/rest/account",
+                method: "PUT",
+                data: JSON.stringify(account),
+                contentType: "application/json", // Đảm bảo gửi dữ liệu dưới dạng JSON
+                success: function(response) {
+                    alert(response);
+                    fillData();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error creating account:', textStatus, errorThrown);
+                    alert('Error creating account. Please try again.');
+                }
+            });
+        });
+
+        $('#delete').click(function(e) {
+            e.preventDefault();
+            const id = $('#inputUsername').val()
+            if (id==''||id.length==0) {
+                alert('Vui lòng nhập tên tài khoản để xóa!');
+                return;
+            }
+            $.ajax({
+                url: "/rest/account?username="+id,
+                method: "DELETE",
+                success: function() {
+                    alert('Delete thành công');
+                    reset();
+                    fillData();
+                    $('#tableSinhVien thead th').first().get(0).scrollIntoView({ behavior: 'smooth' });
+
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error updating student:', textStatus, errorThrown);
+                }
+            });
+        });
+
+        $('#fileAnh').click(function () {
+            $('#inputFile').click();
+        })
+        $('#inputFile').on('change', function(event) {
+            const files = event.target.files;
+
+            if (files.length > 0) {
+                const src= URL.createObjectURL(files[0]);
+                $('#fileAnh').attr('src', src);
+            } else {
+                console.log('No file selected');
+            }
+        });
+        fillData()
+    });
+</script>
+</body>
+</html>

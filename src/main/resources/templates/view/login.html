@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/assets/css/login.css">
+    <link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div class="container">
+
+    <h1>Login</h1>
+
+    <div class="login__form">
+        <form action="/login" method="post">
+            <input type="text" name="username" class="form__control" id="signup__email" placeholder="Username" />
+            <input type="password" name="password" class="form__control" id="signup__password" placeholder="Password" />
+
+            <div class="login__options">
+                <label>
+                    <input type="checkbox" name="remember" />
+                    <span class="label-text">Remeber me</span>
+                </label>
+
+<!--                <a href="#" class="forgot__password">Forgot your password?</a>-->
+            </div>
+<!--<label><a href="/oauth2/authorization/google">Google</a></label>-->
+            <div class="form__group">
+                <button class="btn btn__login">LOG IN</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

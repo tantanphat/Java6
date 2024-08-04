@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{lab3/lab3 :: dynamic(~{::header})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact</title>
+</head>
+<body>
+<div>
+    <header>
+        <h2>[[#{golbal.contact.title}]]</h2>
+        <p>[[#{golbal.contact.name}]]: Nguyễn Tấn Phát</p>
+        <p>[[#{golbal.contact.phone}]]: 123-456-7890</p>
+        <p>Email: phatntps36560@fpt.edu.vn</p>
+        <p th:replace="~{/lab3/frags::frag2(~{::#x/text()},~{::li/text()})}"></p>
+    </header>
+    <ul>
+        <li>123 Main St, City, State, 12345</li>
+    </ul>
+    <i id="x">FPT</i>
+</div>
+
+</body>
+</html>

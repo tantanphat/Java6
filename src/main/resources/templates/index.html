@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<img th:src="@{https://img5.thuthuatphanmem.vn/uploads/2022/01/16/logo-fpt-polytechnic_043151471.png}">
+<nav th:replace="~{menu.html}"></nav>
+<ul>
+    <li th:text="${message}"></li>
+    <li >[[${message}]]</li>
+</ul>
+<ul th:object="${student}">
+<li th:text="${student.name}"></li>
+    <li th:text="${student.age}"></li>
+    <li th:text="${student.grade}"></li>
+    <li th:text="${student.contact.email}"></li>
+    <li th:text="${student.contact.phone}"></li>
+</ul>
+
+</body>
+</html>

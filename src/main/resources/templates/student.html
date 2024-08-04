@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Details</title>
+</head>
+<body>
+<a th:href="@{/student(index=${index <= #arrays.length(index) ? index + 1 : 0})}">Next</a>
+<a th:href="@{/student(index=${index > 0 ? index - 1 : #arrays.length(index) +1})}">Previous</a>
+<ul th:object="${sv}">
+    <li>Môn học:
+        <span th:each="subject : ${sv.subjects}">[[${subject.subjectName}]] </span>
+    </li>
+    <li>Tên: [[${sv.name}]]</li>
+    <li>Tuổi: [[${sv.age}]]</li>
+    <li>Điểm: [[${sv.grade}]]</li>
+    <li>SĐT: [[${sv.contact.phone}]]</li>
+    <li>Email: [[${sv.contact.email}]]</li>
+</ul>
+</body>
+</html>

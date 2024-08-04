@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{lab3/Lab3 :: dynamic(~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Form</title>
+</head>
+<body>
+<div>
+    <section class="contact-wrap" th:object="${sv}">
+        <form th:action="@{/lab3/student/save}" th:method="POST" class="contact-form">
+            <h4 th:text="${message}"></h4> <!-- Display validation message -->
+
+            <!-- Email field -->
+            <div class="col-sm-12">
+                <div class="input-block">
+                    <label for="email" th:text="#{form.email}">Email</label>
+                    <input th:field="*{email}" id="email" type="email" class="form-control">
+                    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-center"></span>
+                </div>
+            </div>
+
+            <!-- Full Name field -->
+            <div class="col-sm-12">
+                <div class="input-block">
+                    <label for="fullName" th:text="#{form.fullName}">Full Name</label>
+                    <input th:field="*{fullName}" id="fullName" type="text" class="form-control">
+                    <span th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></span>
+                </div>
+            </div>
+
+            <!-- Marks field -->
+            <div class="col-sm-12">
+                <div class="input-block">
+                    <label for="marks" th:text="#{form.marks}">Marks</label>
+                    <input th:field="*{marks}" id="marks" type="text" class="form-control">
+                    <span th:if="${#fields.hasErrors('marks')}" th:errors="*{marks}"></span>
+                </div>
+            </div>
+
+            <!-- Gender radios -->
+            <div class="col-sm-12">
+                <div class="d-flex justify-content-top align-items-center customInput">
+                    <label class="me-3">Gender: </label>
+                    <div class="form-check me-5">
+                        <input th:field="*{gender}" th:value="true" class="form-check-input" type="radio" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1" th:text="#{form.gender.male}">Nam</label>
+                    </div>
+                    <div class="form-check">
+                        <input th:field="*{gender}" th:value="false" class="form-check-input" type="radio" id="flexRadioDefault2">
+                        <label class="form-check-label" for="flexRadioDefault2" th:text="#{form.gender.female}">Nữ</label>
+                    </div>
+                    <span th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></span>
+                </div>
+            </div>
+
+            <!-- Country select -->
+            <div class="col-sm-12">
+                <div class="d-flex justify-content-top align-items-center customInput">
+                    <label for="country" th:text="#{form.country.label}">Country:</label>
+                    <select id="country" class="form-select ms-3" th:field="*{country}">
+                        <option value="Vietnam" th:text="#{form.country.options.vietnam}">Vietnam</option>
+                        <option value="USA" th:text="#{form.country.options.usa}">USA</option>
+                        <option value="Japan" th:text="#{form.country.options.japan}">Japan</option>
+                        <option value="China" th:text="#{form.country.options.china}">China</option>
+                        <option value="India" th:text="#{form.country.options.india}">India</option>
+                    </select>
+                    <span th:if="${#fields.hasErrors('country')}" th:errors="*{country}"></span>
+                </div>
+            </div>
+
+            <!-- Submit button -->
+            <div class="col-sm-12">
+                <button class="square-button">Send</button>
+            </div>
+        </form>
+
+    </section>
+</div>
+</body>
+</html>

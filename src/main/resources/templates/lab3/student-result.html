@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/CSS" href="style.css" />
+    <link th:href="@{/assets/lab3/css/result.css}" rel="stylesheet">
+    <svg>
+        <defs>
+            <symbol id="icon-menu" viewBox="0 0 1024 1024">
+                <title>menu</title>
+                <path class="path1" d="M64 192h896v192h-896zM64 448h896v192h-896zM64 704h896v192h-896z"></path>
+            </symbol>
+            <symbol id="icon-exit" viewBox="0 0 1024 1024">
+                <title>exit</title>
+                <path class="path1" d="M768 640v-128h-320v-128h320v-128l192 192zM704 576v256h-320v192l-384-192v-832h704v320h-64v-256h-512l256 128v576h256v-192z"></path>
+            </symbol>
+        </defs>
+    </svg>
+    <title>Student Profile</title>
+</head>
+<body>
+<div class="profile" th:object="${sv}">
+    <div class="content">
+        <div class="back"></div>
+        <div class="proPage ExitPage"><a href="/lab3/home"><svg class="icon icon-exit"><use xlink:href="#icon-exit"></use></svg></a></div>
+        <div class="proPage homePage"><svg class="icon icon-menu"><use xlink:href="#icon-menu"></use></svg></div>
+        <div class="profilePic"></div>
+        <h3>[[${sv.fullName}]]</h3>
+        <p>
+            <strong>Email: </strong> [[${sv.email}]]
+            <br>
+            <strong>Marks: </strong> [[${sv.marks}]]
+            <br>
+            <strong>Gender: </strong> [[${sv.gender}?'Nam':'Nữ']]
+            <br>
+            <strong>Country: </strong> [[${sv.country}]]
+            <br>
+        </p>
+    </div>
+</div>
+</body>
+</html>

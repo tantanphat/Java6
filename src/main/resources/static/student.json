@@ -1,0 +1,10 @@
+{
+  "name": "Tấn Phát",
+  "age": 20,
+  "grade": 100,
+  "contact": {
+    "phone": "0909090909",
+    "email": "taptan@gmail.com"
+  },
+  "subjects": ["Toán", "Lý", "Hóa"]
+}

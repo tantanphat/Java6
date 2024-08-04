@@ -1,0 +1,31 @@
+[
+  {
+    "name": "Tấn Phát",
+    "age": 20,
+    "grade": 100,
+    "contact": {
+      "phone": "0909090909",
+      "email": "taptan@gmail.com"
+    },
+    "subjects": ["Toán", "Lý", "Hóa"]
+  },
+  {
+    "name": "Nguyễn Văn A",
+    "age": 22,
+    "grade": 95,
+    "contact": {
+      "phone": "0987654321",
+      "email": "vana@gmail.com"
+    },
+    "subjects": ["Toán", "Lý", "Sinh"]
+  },
+  {
+    "name": "Phạm Thị B",
+    "age": 21,
+    "grade": 50,
+    "contact": {
+      "email": "thib@gmail.com"
+    },
+    "subjects": ["Văn", "Sử", "Địa"]
+  }
+]

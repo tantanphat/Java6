@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{lab3/lab3 :: dynamic(~{::body})}">
+<head>
+	<meta charset="UTF-8">
+</head>
+<body>
+<div class="app">
+	<h3 style="color: aliceblue;">Upload file</h3>
+	<div class="input-group mb-3">
+		<form id="uploadForm" enctype="multipart/form-data">
+			<div class="custom-file">
+				<input type="file" accept="image/**" multiple class="custom-file-input" id="uploadFiles" name="files">
+				<button id="upload">Upload</button>
+			</div>
+
+		</form>
+		<br>
+	</div>
+	<label title="Double click to delete">
+		<img alt="">
+	</label>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	$(document).ready(function() {
+		$('#upload').click(function() {
+			var formData = new FormData($('#uploadForm')[0]);
+			$.ajax({
+				url: '/api/file/saves',
+				type: 'POST',
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function(response) {
+					console.log('File uploaded successfully');
+					console.log(response);
+				},
+				error: function(error) {
+					console.log('Error uploading file');
+					console.log(error);
+				}
+			});
+		});
+	});
+</script>
+</body>
+</html>

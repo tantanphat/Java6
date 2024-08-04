@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{lab3/lab3 :: dynamic(~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body ng-app="myapp"  ng-controller="myctrl">
+<div>
+    <h3 style="color: aliceblue;">Import file excel</h3>
+    <div class="input-group mb-3">
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" id="fileInput">
+        </div>
+        <div class="input-group-append d-flex">
+            <span class="input-group-text ms-5 me-3" id="uploadBtn">Upload</span>
+            <span class="btn btn-dark" id="deleteAll">Delete All</span>
+        </div>
+    </div>
+</div>
+<div class="container">
+
+    <table id="tblStudents" class="display caption-top" style="width:100%" >
+        <thead class="text-center">
+        <tr>
+            <th >Email</th>
+            <th >Fullname</th>
+            <th >Marks</th>
+            <th >Gender</th>
+            <th >Country</th>
+        </tr>
+        </thead>
+        <tbody class="text-center">
+        </tbody>
+    </table>
+</div>
+
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.2.0/exceljs.min.js"></script><script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.1.0/af-2.7.0/b-3.1.0/b-colvis-3.1.0/b-html5-3.1.0/cr-2.0.3/date-1.5.2/fc-5.0.1/fh-4.0.1/kt-2.12.1/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.3/sb-1.7.1/sp-2.3.1/sl-2.0.3/sr-1.4.1/datatables.min.js"></script>
+
+<script >
+    $(document).ready(function() {
+        $.noConflict()
+        function fillData() {
+            $.ajax({
+                url: '/api/students',
+                type: 'GET',
+                success: function(data) {
+
+                    if ($.fn.DataTable.isDataTable('#tblStudents')) {
+                        // Hủy bỏ DataTables hiện tại
+                        $('#tblStudents').DataTable().destroy();
+                    }
+
+
+                    $('#tblStudents').DataTable({
+                        data: data,
+                        paging: true,
+                        autoWidth: false,
+                        responsive: true,
+                        pageLength: 10,
+                        info: false,
+                        lengthChange: false,
+                        columns: [
+                            { data: 'email', title: 'Email' },
+                            { data: 'fullname', title: 'Full Name' },
+                            { data: 'marks', title: 'Marks' },
+                            {
+                                data: 'gender',
+                                title: 'Gender',
+                                render: function(data, type, row) {
+                                    return data === 'true' ? 'Nam' : 'Nữ'; // Hoặc bạn có thể sử dụng điều kiện khác tùy theo dữ liệu
+                                }
+                            },
+                            { data: 'country', title: 'Country' }
+                        ],
+                    });
+
+                    $('.dt-length label').css('display', 'none');
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr.responseText);
+                }
+            })
+
+        }
+        $('#uploadBtn').on('click', function() {
+            let file = $('#fileInput')[0].files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onloadend = async function() {
+                    try {
+                        let workbook = new ExcelJS.Workbook();
+                        await workbook.xlsx.load(reader.result);
+                        const worksheet = workbook.getWorksheet('Sheet1');
+
+                        worksheet.eachRow((row, index) => {
+                            if (index > 2) {
+                                const student = {
+                                    email: row.getCell(1).value,
+                                    fullname: row.getCell(2).value,
+                                    marks: +row.getCell(3).value,
+                                    gender: row.getCell(4).value === 'true',
+                                    country: row.getCell(5).value,
+                                };
+
+                                // console.log(student);
+                                $.ajax({
+                                    url: '/api/students',
+                                    method: 'POST',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify(student),
+                                    success: function(response) {
+                                        fillData();
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.log('Thêm thất bại:', error);
+                                    }
+                                });
+                            }
+                        });
+
+                    } catch (e) {
+                        console.error('Error processing file:', e);
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                alert("Please choose a file.");
+            }
+        });
+        $('#deleteAll').click(function() {
+            $.ajax({
+                url: '/api/students',
+                method: 'DELETE',
+                success: function() {
+                    fillData();
+                    alert('Xóa thành công')
+                },
+                error: function(xhr, status, error) {
+                    console.log('Xóa thất bại:', error);
+                }
+            });
+        })
+        fillData();
+    });
+</script>
+</body>
+</html>
